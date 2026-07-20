@@ -1,35 +1,35 @@
-<?= $this->extend('operateurs/layout') ?>
+    <?= $this->extend('operateurs/layout') ?>
 
-<?= $this->section('contenu') ?>
+    <?= $this->section('contenu') ?>
 
-<h1>Configuration des préfixes</h1>
+    <h1>Configuration des préfixes</h1>
 
-<form class="form-ajout" action="/operateur/prefixes/store" method="post">
-    <?= csrf_field() ?>
-    <input type="text" name="prefixe" placeholder="Ex: 033" maxlength="10" required>
-    <button type="submit" class="btn">Ajouter</button>
-</form>
+    <form class="form-ajout" action="/operateur/prefixes/store" method="post">
+        <?= csrf_field() ?>
+        <input type="text" name="prefixe" placeholder="Ex: 033" maxlength="10" required>
+        <button type="submit" class="btn">Ajouter</button>
+    </form>
 
-<table>
-    <thead>
-        <tr>
-            <th>Préfixe</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($prefixes as $p): ?>
+    <table>
+        <thead>
             <tr>
-                <td><?= esc($p['prefixe']) ?></td>
-                <td>
-                    <form class="inline" action="/operateur/prefixes/delete/<?= $p['id'] ?>" method="post" onsubmit="return confirm('Supprimer ce préfixe ?');">
-                        <?= csrf_field() ?>
-                        <button type="submit" class="btn btn-danger">Supprimer</button>
-                    </form>
-                </td>
+                <th>Préfixe</th>
+                <th>Action</th>
             </tr>
-        <?php endforeach; ?>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            <?php foreach ($prefixes as $p): ?>
+                <tr>
+                    <td><?= esc($p['prefixe']) ?></td>
+                    <td>
+                        <form class="inline" action="/operateur/prefixes/delete/<?= $p['id'] ?>" method="post" onsubmit="return confirm('Supprimer ce préfixe ?');">
+                            <?= csrf_field() ?>
+                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 
-<?= $this->endSection() ?>
+    <?= $this->endSection() ?>

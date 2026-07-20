@@ -1,67 +1,19 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion Opérateur</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .box {
-            background: white;
-            padding: 30px;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            width: 320px;
-        }
-
-        h1 {
-            font-size: 18px;
-            color: #2c3e50;
-            margin-top: 0;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        button {
-            width: 100%;
-            padding: 10px;
-            background: #2c3e50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .alert-erreur {
-            background: #fdecea;
-            color: #c0392b;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 12px;
-            font-size: 14px;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/style.css" rel="stylesheet">
 </head>
-
 <body>
-    <div class="box">
-        <h1>Connexion Opérateur</h1>
+<div class="auth-wrap">
+    <div class="auth-card">
+        <div class="text-center mb-4">
+            <h1 class="auth-title">Espace Opérateur</h1>
+            <p class="auth-subtitle">Connectez-vous à votre compte</p>
+        </div>
 
         <?php if (session()->getFlashdata('erreur')): ?>
             <div class="alert-erreur"><?= session()->getFlashdata('erreur') ?></div>
@@ -69,11 +21,17 @@
 
         <form action="/operateur/verifier" method="post">
             <?= csrf_field() ?>
-            <input type="text" name="identifiant" placeholder="Identifiant" required>
-            <input type="password" name="mot_de_passe" placeholder="Mot de passe" required>
-            <button type="submit">Se connecter</button>
+            <div class="mb-3">
+                <label>Identifiant</label>
+                <input type="text" name="identifiant" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label>Mot de passe</label>
+                <input type="password" name="mot_de_passe" class="form-control" required>
+            </div>
+            <button type="submit" class="btn-brand w-100">Se connecter</button>
         </form>
     </div>
+</div>
 </body>
-
 </html>

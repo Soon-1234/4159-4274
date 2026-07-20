@@ -11,8 +11,8 @@
 <?php if (($variant ?? 'app') === 'app'): ?>
     <div class="topbar">
         <div class="brand">
-            <span class="brand-mark">MM</span>
-            <span>Mobile Money</span>
+            <span class="brand-mark">AS</span>
+            <span>AR'send</span>
         </div>
         <div class="d-flex align-items-center">
             <span class="user-chip"><?= esc($client['numero'] ?? '') ?></span>
