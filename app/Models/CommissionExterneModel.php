@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use CodeIgniter\Model;
+
 class CommissionExterneModel extends Model
 {
     protected $table = 'commission_externe';
@@ -15,5 +17,3 @@ class CommissionExterneModel extends Model
         return $ligne ? (float) $ligne['pourcentage'] : 0;
     }
 }
-
-?>

@@ -11,7 +11,6 @@ use App\Models\AutreOperateurModel;
 use App\Models\AutreOperateurPrefixeModel;
 use App\Models\CommissionExterneModel;
 
-
 class OperationController extends BaseController
 {
     protected function clientConnecte()

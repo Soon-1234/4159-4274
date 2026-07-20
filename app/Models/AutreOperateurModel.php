@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
+
 class AutreOperateurModel extends Model
 {
     protected $table = 'autre_operateur';
@@ -10,5 +11,3 @@ class AutreOperateurModel extends Model
     protected $allowedFields = ['nom'];
     protected $returnType = 'array';
 }
-
-?>
