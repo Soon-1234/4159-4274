@@ -20,12 +20,3 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-
-document.addEventListener('DOMContentLoaded', function () {
-    const champNumero = document.getElementById('numero');
-    if (champNumero) {
-        champNumero.addEventListener('input', function () {
-            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
-        });
-    }
-});

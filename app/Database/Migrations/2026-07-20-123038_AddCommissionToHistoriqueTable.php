@@ -4,12 +4,12 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class AddFraisRetraitInclusToHistorique extends Migration
+class AddCommissionToHistoriqueTable extends Migration
 {
     public function up()
     {
         $this->forge->addColumn('historique', [
-            'frais_retrait_inclus' => [
+            'commission' => [
                 'type'       => 'INT',
                 'constraint' => 11,
                 'default'    => 0,
@@ -20,6 +20,6 @@ class AddFraisRetraitInclusToHistorique extends Migration
 
     public function down()
     {
-        $this->forge->dropColumn('historique', 'frais_retrait_inclus');
+        $this->forge->dropColumn('historique', 'commission');
     }
 }

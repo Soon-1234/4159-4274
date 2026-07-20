@@ -17,7 +17,6 @@
         <a href="/client/retrait" class="action-btn"><span class="action-icon">－</span>Retrait</a>
         <a href="/client/transfert" class="action-btn"><span class="action-icon">⇄</span>Transfert</a>
         <a href="/client/historique" class="action-btn"><span class="action-icon">≡</span>Historique</a>
-        <a href="/client/envoi-multiple" class="action-btn"><span class="action-icon">⇉</span>Envoi multiple</a>
     </div>
 </div>
 

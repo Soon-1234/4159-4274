@@ -133,7 +133,6 @@ class OperationController extends BaseController
 
         $numeroDestinataire = $this->request->getPost('numero_destinataire');
         $montant = (int) $this->request->getPost('montant');
-        $inclureFraisRetrait = (bool) $this->request->getPost('inclure_frais_retrait');
 
         if ($montant <= 0) {
             return redirect()->back()->with('erreur', 'Montant invalide');
@@ -151,49 +150,36 @@ class OperationController extends BaseController
         }
 
         $baremeModel = new BaremeFraisModel();
-        $baremeTransfert = $baremeModel->getFrais(3, $montant);
+        $bareme = $baremeModel->getFrais(3, $montant); // 3 = TRANSFERT
 
-        if (!$baremeTransfert) {
+        if (!$bareme) {
             return redirect()->back()->with('erreur', 'Montant hors des tranches autorisées');
         }
 
-        $fraisTransfert = $baremeTransfert['frais'];
-        $fraisRetrait = 0;
+        $frais = $bareme['frais'];
+        $total = $montant + $frais;
 
-        if ($inclureFraisRetrait) {
-            $baremeRetrait = $baremeModel->getFrais(2, $montant);
-            if ($baremeRetrait) {
-                $fraisRetrait = $baremeRetrait['frais'];
-            }
-        }
-
-        $totalDebit = $montant + $fraisTransfert + $fraisRetrait;
-        $montantCredit = $montant + $fraisRetrait;
-
-        if ($client['solde'] < $totalDebit) {
+        if ($client['solde'] < $total) {
             return redirect()->back()->with('erreur', 'Solde insuffisant');
         }
 
-        $clientModel->update($client['id'], ['solde' => $client['solde'] - $totalDebit]);
-        $clientModel->update($destinataire['id'], ['solde' => $destinataire['solde'] + $montantCredit]);
+        // Débiter expéditeur
+        $clientModel->update($client['id'], ['solde' => $client['solde'] - $total]);
+
+        // Créditer destinataire
+        $clientModel->update($destinataire['id'], ['solde' => $destinataire['solde'] + $montant]);
 
         $historiqueModel = new HistoriqueModel();
         $historiqueModel->insert([
             'client_id' => $client['id'],
-            'type_operation_id' => 3,
+            'type_operation_id' => 3, // TRANSFERT
             'destinataire_id' => $destinataire['id'],
             'montant' => $montant,
-            'frais' => $fraisTransfert,
-            'frais_retrait_inclus' => $fraisRetrait,
+            'frais' => $frais,
             'date_operation' => date('Y-m-d H:i:s'),
         ]);
 
-        $message = "Transfert de $montant Ar effectué (frais : $fraisTransfert Ar)";
-        if ($fraisRetrait > 0) {
-            $message .= " — frais de retrait inclus : $fraisRetrait Ar";
-        }
-
-        return redirect()->to('/client/dashboard')->with('succes', $message);
+        return redirect()->to('/client/dashboard')->with('succes', "Transfert de $montant Ar effectué (frais : $frais Ar)");
     }
 
 
@@ -213,104 +199,5 @@ class OperationController extends BaseController
             'client' => $client,
             'operations' => $operations,
         ]);
-    }
-
-
-
-    public function envoiMultiple()
-    {
-        $client = $this->clientConnecte();
-        if (!$client) {
-            return redirect()->to('/');
-        }
-        return view('clients/envoi_multiple', ['client' => $client]);
-    }
-
-
-    public function envoiMultipleValider()
-    {
-        $client = $this->clientConnecte();
-        if (!$client) {
-            return redirect()->to('/');
-        }
-
-        $numeros = $this->request->getPost('numeros') ?? [];
-        $montantTotal = (int) $this->request->getPost('montant_total');
-
-        $numeros = array_values(array_filter($numeros, fn($n) => trim($n) !== ''));
-        $nombreDestinataires = count($numeros);
-
-        if ($nombreDestinataires < 2) {
-            return redirect()->back()->with('erreur', 'Ajoutez au moins 2 destinataires');
-        }
-
-        if (count($numeros) !== count(array_unique($numeros))) {
-            return redirect()->back()->with('erreur', 'Un même numéro ne peut pas être ajouté plusieurs fois');
-        }
-
-        if ($montantTotal <= 0) {
-            return redirect()->back()->with('erreur', 'Montant invalide');
-        }
-
-        $clientModel = new ClientModel();
-        $baremeModel = new BaremeFraisModel();
-
-        $part = intdiv($montantTotal, $nombreDestinataires);
-        $reste = $montantTotal % $nombreDestinataires;
-
-        $destinatairesValides = [];
-        $totalDebit = 0;
-
-        foreach ($numeros as $index => $numero) {
-            if ($numero === $client['numero']) {
-                return redirect()->back()->with('erreur', 'Impossible de vous inclure comme destinataire');
-            }
-
-            $destinataire = $clientModel->where('numero', $numero)->first();
-            if (!$destinataire) {
-                return redirect()->back()->with('erreur', "Numéro introuvable : $numero");
-            }
-
-            $montantPart = $part + ($index === $nombreDestinataires - 1 ? $reste : 0);
-
-            $bareme = $baremeModel->getFrais(3, $montantPart);
-            if (!$bareme) {
-                return redirect()->back()->with('erreur', "Montant hors tranche pour $numero ($montantPart Ar)");
-            }
-
-            $frais = $bareme['frais'];
-            $totalDebit += $montantPart + $frais;
-
-            $destinatairesValides[] = [
-                'destinataire' => $destinataire,
-                'montant' => $montantPart,
-                'frais' => $frais,
-            ];
-        }
-
-        if ($client['solde'] < $totalDebit) {
-            return redirect()->back()->with('erreur', 'Solde insuffisant pour cet envoi multiple');
-        }
-
-        $clientModel->update($client['id'], ['solde' => $client['solde'] - $totalDebit]);
-
-        $historiqueModel = new HistoriqueModel();
-
-        foreach ($destinatairesValides as $ligne) {
-            $dest = $ligne['destinataire'];
-            $clientModel->update($dest['id'], ['solde' => $dest['solde'] + $ligne['montant']]);
-
-            $historiqueModel->insert([
-                'client_id' => $client['id'],
-                'type_operation_id' => 3,
-                'destinataire_id' => $dest['id'],
-                'montant' => $ligne['montant'],
-                'frais' => $ligne['frais'],
-                'frais_retrait_inclus' => 0,
-                'date_operation' => date('Y-m-d H:i:s'),
-            ]);
-        }
-
-        return redirect()->to('/client/dashboard')->with('succes', "Envoi multiple effectué vers $nombreDestinataires destinataires");
     }
 }

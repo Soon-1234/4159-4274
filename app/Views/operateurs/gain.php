@@ -10,7 +10,9 @@
     <button type="submit" class="btn">Filtrer</button>
 </form>
 
-<h2 style="margin-top: 25px; font-size: 16px;">Total global : <?= number_format($totalGlobal, 0, ',', ' ') ?> Ar</h2>
+<h2 style="margin-top: 25px; font-size: 16px; color: #27ae60;">
+    Notre gain (frais) : <?= number_format($totalGainsNous, 0, ',', ' ') ?> Ar
+</h2>
 
 <table>
     <thead>
@@ -21,7 +23,7 @@
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($parType as $ligne): ?>
+        <?php foreach ($gainsParType as $ligne): ?>
             <tr>
                 <td><?= esc($ligne['nom']) ?></td>
                 <td><?= $ligne['nb_operations'] ?></td>
@@ -31,8 +33,15 @@
     </tbody>
 </table>
 
-<?php if (empty($parType)): ?>
+<?php if (empty($gainsParType)): ?>
     <p>Aucune opération sur cette période.</p>
 <?php endif; ?>
+
+<h2 style="margin-top: 30px; font-size: 16px; color: #c0392b;">
+    Reversé aux autres opérateurs (commission) : <?= number_format($totalCommission, 0, ',', ' ') ?> Ar
+</h2>
+<p style="font-size: 13px; color: #888;">
+    Détail par opérateur disponible sur la page « Montants envoyés par opérateur ».
+</p>
 
 <?= $this->endSection() ?>

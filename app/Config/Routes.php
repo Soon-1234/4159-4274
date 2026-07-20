@@ -24,7 +24,14 @@ $routes->group('operateur', ['filter' => 'auth:operateur'], function ($routes) {
     $routes->get('types-operation/edit/(:num)', 'Operateurs\TypeOperationController::edit/$1');
     $routes->post('types-operation/update/(:num)', 'Operateurs\TypeOperationController::update/$1');
     $routes->post('types-operation/delete/(:num)', 'Operateurs\TypeOperationController::delete/$1');
-
+    $routes->get('autres-operateurs', 'Operateurs\AutreOperateurController::index');
+    $routes->post('autres-operateurs/store', 'Operateurs\AutreOperateurController::store');
+    $routes->post('autres-operateurs/delete/(:num)', 'Operateurs\AutreOperateurController::delete/$1');
+    $routes->post('autres-operateurs/commission', 'Operateurs\AutreOperateurController::updateCommission');
+    $routes->get('autres-operateurs/prefixes/(:num)', 'Operateurs\AutreOperateurController::prefixes/$1');
+    $routes->post('autres-operateurs/prefixes/(:num)/store', 'Operateurs\AutreOperateurController::storePrefixe/$1');
+    $routes->post('autres-operateurs/prefixes/delete/(:num)', 'Operateurs\AutreOperateurController::deletePrefixe/$1');
+    $routes->get('envois-operateurs', 'Operateurs\EnvoiOperateurController::index');
     $routes->get('types-operation', 'Operateurs\TypeOperationController::index');
 
     $routes->get('baremes/(:num)', 'Operateurs\BaremeFraisController::index/$1');
@@ -59,8 +66,4 @@ $routes->group('client', ['filter' => 'auth:client'], function ($routes) {
 
     //historique
     $routes->get('historique', 'Clients\OperationController::historique');
-
-    //evoi multiple
-    $routes->get('envoi-multiple', 'Clients\OperationController::envoiMultiple');
-    $routes->post('envoi-multiple/valider', 'Clients\OperationController::envoiMultipleValider');
 });

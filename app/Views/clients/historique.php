@@ -46,6 +46,6 @@
             </div>
         </div>
 
-
+<a href="/client/dashboard" class="link-muted d-block text-center mt-3">Retour au tableau de bord</a>
 
         <?= view('partials/footer') ?>

@@ -124,15 +124,13 @@ D. Interface
  Créer les tableaux de bord.
  Utiliser Bootstrap.
 
+ ==================================================================== VERSION 2
+ # Création des seed 
+ php spark make:seeder AutreOperateurSeeder
+php spark make:seeder CommissionExterneSeeder
 
-
-
-
-
-
-
-
-
- --------------------V2---------------
- Migration:
- php spark make:migration AddFraisRetraitInclusToHistorique
+# Création des migrations 
+ php spark make:migration AddCommissionToHistoriqueTable
+ php spark make:migration CreateAutreOperateurTable
+ php spark make:migration CreateAutreOperateurPrefixeTable
+ php spark make:migration CreateCommissionExterneTable

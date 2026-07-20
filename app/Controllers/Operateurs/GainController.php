@@ -3,7 +3,6 @@
 namespace App\Controllers\Operateurs;
 
 use App\Controllers\BaseController;
-use App\Models\Operateurs\HistoriqueModel;
 
 class GainController extends BaseController
 {
@@ -14,14 +13,8 @@ class GainController extends BaseController
 
         $db = \Config\Database::connect();
 
-        $totalGlobal = $db->table('historique')
-            ->selectSum('frais')
-            ->where('date_operation >=', $dateDebut . ' 00:00:00')
-            ->where('date_operation <=', $dateFin . ' 23:59:59')
-            ->get()
-            ->getRow('frais') ?? 0;
-
-        $parType = $db->table('historique h')
+        // Gains "nous" (frais) par type d'opération
+        $gainsParType = $db->table('historique h')
             ->select('t.nom, SUM(h.frais) as total_frais, COUNT(h.id) as nb_operations')
             ->join('type_operation t', 't.id = h.type_operation_id')
             ->where('h.date_operation >=', $dateDebut . ' 00:00:00')
@@ -30,8 +23,19 @@ class GainController extends BaseController
             ->get()
             ->getResultArray();
 
-        $data['totalGlobal'] = $totalGlobal ?: 0;
-        $data['parType'] = $parType;
+        $totalGainsNous = array_sum(array_column($gainsParType, 'total_frais'));
+
+        // Total reversé aux autres opérateurs (commission)
+        $totalCommission = $db->table('historique')
+            ->selectSum('commission')
+            ->where('date_operation >=', $dateDebut . ' 00:00:00')
+            ->where('date_operation <=', $dateFin . ' 23:59:59')
+            ->get()
+            ->getRow('commission') ?? 0;
+
+        $data['gainsParType'] = $gainsParType;
+        $data['totalGainsNous'] = $totalGainsNous;
+        $data['totalCommission'] = $totalCommission ?: 0;
         $data['dateDebut'] = $dateDebut;
         $data['dateFin'] = $dateFin;
 
