@@ -29,7 +29,7 @@ class Database extends Config
         'hostname'     => 'localhost',
         'username'     => '',
         'password'     => '',
-        'database'     => '',
+        'database'     => WRITEPATH .'blog.db',
         'DBDriver'     => 'SQLite3',
         'DBPrefix'     => '',
         'pConnect'     => false,
