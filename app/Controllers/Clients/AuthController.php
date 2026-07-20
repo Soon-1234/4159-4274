@@ -6,7 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\ClientModel;
 use App\Models\PrefixeModel;
 
-class Auth extends BaseController
+class AuthController extends BaseController
 {
     public function login()
     {
