@@ -42,4 +42,35 @@ class PrefixeController extends BaseController
 
         return redirect()->to('/operateur/prefixes')->with('succes', 'Préfixe supprimé.');
     }
+
+    public function edit($id)
+    {
+        $model = new PrefixeModel();
+        $data['prefixe'] = $model->find($id);
+
+        if (!$data['prefixe']) {
+            return redirect()->to('/operateur/prefixes')->with('erreur', 'Préfixe introuvable.');
+        }
+
+        return view('operateurs/prefixe_edit', $data);
+    }
+
+    public function update($id)
+    {
+        $model = new PrefixeModel();
+        $prefixe = $this->request->getPost('prefixe');
+
+        if (empty($prefixe)) {
+            return redirect()->back()->with('erreur', 'Le préfixe est obligatoire.');
+        }
+
+        $existe = $model->where('prefixe', $prefixe)->where('id !=', $id)->first();
+        if ($existe) {
+            return redirect()->back()->with('erreur', 'Ce préfixe existe déjà.');
+        }
+
+        $model->update($id, ['prefixe' => $prefixe]);
+
+        return redirect()->to('/operateur/prefixes')->with('succes', 'Préfixe modifié.');
+    }
 }
