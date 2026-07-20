@@ -49,8 +49,7 @@ INSERT INTO type_operation (nom) VALUES
 ('TRANSFERT');
 
 
-INSERT INTO bareme_frais
-(type_operation_id, montant_min, montant_max, frais)
+INSERT INTO bareme_frais (type_operation_id, montant_min, montant_max, frais)
 VALUES
 (2,100,1000,50),
 (2,1001,5000,100),
