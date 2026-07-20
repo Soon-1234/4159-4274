@@ -8,37 +8,68 @@ class GainController extends BaseController
 {
     public function index()
     {
-        $dateDebut = $this->request->getGet('date_debut') ?: date('Y-m-01');
-        $dateFin   = $this->request->getGet('date_fin') ?: date('Y-m-t');
+        $dateDebut = $this->request->getVar('date_debut') ?? date('Y-m-d', strtotime('-1 month'));
+        $dateFin = $this->request->getVar('date_fin') ?? date('Y-m-d');
 
         $db = \Config\Database::connect();
 
-        // Gains "nous" (frais) par type d'opération
-        $gainsParType = $db->table('historique h')
-            ->select('t.nom, SUM(h.frais) as total_frais, COUNT(h.id) as nb_operations')
-            ->join('type_operation t', 't.id = h.type_operation_id')
-            ->where('h.date_operation >=', $dateDebut . ' 00:00:00')
-            ->where('h.date_operation <=', $dateFin . ' 23:59:59')
-            ->groupBy('t.nom')
-            ->get()
-            ->getResultArray();
+        $gainsParTypeQuery = "
+        SELECT 
+            type_operation.nom as nom, 
+            COUNT(*) as nb_operations, 
+            COALESCE(SUM(historique.frais), 0) as total_frais
+        FROM historique
+        JOIN type_operation ON historique.type_operation_id = type_operation.id
+        WHERE historique.date_operation BETWEEN ? AND ?
+          AND historique.frais > 0
+        GROUP BY type_operation.id
+        ORDER BY type_operation.nom ASC
+    ";
 
-        $totalGainsNous = array_sum(array_column($gainsParType, 'total_frais'));
+        $gainsParType = $db->query($gainsParTypeQuery, [$dateDebut . ' 00:00:00', $dateFin . ' 23:59:59'])->getResultArray();
 
-        // Total reversé aux autres opérateurs (commission)
-        $totalCommission = $db->table('historique')
-            ->selectSum('commission')
-            ->where('date_operation >=', $dateDebut . ' 00:00:00')
-            ->where('date_operation <=', $dateFin . ' 23:59:59')
-            ->get()
-            ->getRow('commission') ?? 0;
+        $totalGainsNous = 0;
+        foreach ($gainsParType as $row) {
+            $totalGainsNous += $row['total_frais'];
+        }
 
-        $data['gainsParType'] = $gainsParType;
-        $data['totalGainsNous'] = $totalGainsNous;
-        $data['totalCommission'] = $totalCommission ?: 0;
-        $data['dateDebut'] = $dateDebut;
-        $data['dateFin'] = $dateFin;
+        $commissionsExternesQuery = "
+        SELECT 
+            p.nom_operateur as operateur,
+            COUNT(*) as nb_transferts,
+            COALESCE(SUM(h.commission_due), 0) as total_commission
+        FROM historique h
+        LEFT JOIN autre_operateur_prefixe p ON h.prefixe_destinataire = p.code_prefixe
+        WHERE h.date_operation BETWEEN ? AND ?
+          AND p.nom_operateur IS NOT NULL
+          AND h.commission_due > 0
+        GROUP BY p.id
+        ORDER BY p.nom_operateur ASC
+    ";
 
-        return view('operateurs/gain', $data);
+        try {
+            $resultats = $db->query($commissionsExternesQuery, [$dateDebut . ' 00:00:00', $dateFin . ' 23:59:59'])->getResultArray();
+        } catch (\Exception $e) {
+            log_message('error', "Erreur dans la requête commissions: " . $e->getMessage());
+            $resultats = [];
+        }
+
+        $totalCommission = 0;
+        $totalGeneral = 0;
+        foreach ($resultats as $row) {
+            $val = floatval($row['total_commission']);
+            $totalCommission += $val;
+            $totalGeneral += $val;
+        }
+
+        return view('operateurs/gain', [
+            'dateDebut' => $dateDebut,
+            'dateFin' => $dateFin,
+            'gainsParType' => $gainsParType,
+            'totalGainsNous' => $totalGainsNous,
+            'resultats' => $resultats,
+            'totalCommission' => $totalCommission,
+            'totalGeneral' => $totalGeneral
+        ]);
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
-
 class AutreOperateurPrefixeModel extends Model
 {
     protected $table = 'autre_operateur_prefixe';
