@@ -18,14 +18,15 @@ class AuthFilter implements FilterInterface
             }
         }
 
-        if ($role === 'admin') {
-            if (!session()->get('isAdminLoggedIn')) {
-                return redirect()->to('/admin/login')->with('erreur', 'Accès réservé aux administrateurs.');
+        if ($role === 'operateur') {
+            if (!session()->get('isOperateurLoggedIn')) {
+                return redirect()->to('/operateur/login')->with('erreur', 'Veuillez vous connecter.');
             }
         }
     }
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
+        // rien
     }
 }

@@ -9,12 +9,14 @@ php spark make:migration CreateClientTable
 php spark make:migration CreateTypeOperationTable
 php spark make:migration CreateBaremeFraisTable
 php spark make:migration CreateHistoriqueTable
+php spark make:migration CreateOperateurTable
 
 # Création des seed 
 php spark make:seeder PrefixeSeeder
 php spark make:seeder TypeOperationSeeder
 php spark make:seeder BaremeFraisSeeder
 php spark make:seeder DatabaseSeeder
+php spark make:seeder OperateurSeeder
 
 # lancer les migrations rehetra 
 php spark migrate

@@ -10,22 +10,49 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Clients\AuthController::login');
 $routes->post('/auth/verifier', 'Clients\AuthController::verifier');
 $routes->get('/auth/logout', 'Clients\AuthController::logout');
+$routes->get('operateur/login', 'Operateurs\AuthController::login');
+$routes->post('operateur/verifier', 'Operateurs\AuthController::verifier');
+$routes->get('operateur/logout', 'Operateurs\AuthController::logout');
+
+// Routes opérateur protégées
+$routes->group('operateur', ['filter' => 'auth:operateur'], function ($routes) {
+    $routes->get('prefixes', 'Operateurs\PrefixeController::index');
+    $routes->post('prefixes/store', 'Operateurs\PrefixeController::store');
+    $routes->post('prefixes/delete/(:num)', 'Operateurs\PrefixeController::delete/$1');
+
+    $routes->get('types-operation', 'Operateurs\TypeOperationController::index');
+
+    $routes->get('baremes/(:num)', 'Operateurs\BaremeFraisController::index/$1');
+    $routes->post('baremes/(:num)/store', 'Operateurs\BaremeFraisController::store/$1');
+    $routes->post('baremes/update/(:num)', 'Operateurs\BaremeFraisController::update/$1');
+    $routes->post('baremes/delete/(:num)', 'Operateurs\BaremeFraisController::delete/$1');
+
+    $routes->get('clients', 'Operateurs\ClientController::index');
+
+    $routes->get('gains', 'Operateurs\GainController::index'); 
+});
 
 
-$routes->get('/client/dashboard', 'Clients\DashboardController::index');
 
-//depot
-$routes->get('/client/depot', 'Clients\OperationController::depot');
-$routes->post('/client/depot/valider', 'Clients\OperationController::depotValider');
+$routes->group('client', ['filter' => 'auth:client'], function ($routes) {
+    $routes->get('dashboard', 'Clients\DashboardController::index');
 
-//retrait
-$routes->get('/client/retrait', 'Clients\OperationController::retrait');
-$routes->post('/client/retrait/valider', 'Clients\OperationController::retraitValider');
+    $routes->get('dashboard', 'Clients\DashboardController::index');
 
-//transfert
-$routes->get('/client/transfert', 'Clients\OperationController::transfert');
-$routes->post('/client/transfert/valider', 'Clients\OperationController::transfertValider');
+    //depot
+    $routes->get('depot', 'Clients\OperationController::depot');
+    $routes->post('depot/valider', 'Clients\OperationController::depotValider');
 
-//historique
-$routes->get('/client/historique', 'Clients\OperationController::historique');
+    //retrait
+    $routes->get('retrait', 'Clients\OperationController::retrait');
+    $routes->post('retrait/valider', 'Clients\OperationController::retraitValider');
 
+    //transfert
+    $routes->get('transfert', 'Clients\OperationController::transfert');
+    $routes->post('transfert/valider', 'Clients\OperationController::transfertValider');
+
+    //historique
+    $routes->get('historique', 'Clients\OperationController::historique');
+
+    
+});
