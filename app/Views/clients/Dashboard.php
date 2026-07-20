@@ -6,6 +6,11 @@
 <body>
 <div class="container mt-5">
     <h2>Bienvenue, <?= esc($client['numero']) ?></h2>
+
+    <?php if (session()->getFlashdata('succes')): ?>
+    <div class="alert alert-success"><?= session()->getFlashdata('succes') ?></div>
+<?php endif; ?>
+
     <div class="alert alert-info">
         Solde actuel : <strong><?= number_format($client['solde'], 0, ',', ' ') ?> Ar</strong>
     </div>
