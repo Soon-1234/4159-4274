@@ -17,8 +17,8 @@
             <input type="text" name="numero" class="form-control" placeholder="034 XX XXX XX" required>
         </div>
         <button type="submit" class="btn btn-brand w-100">Se connecter</button>
-        <a href="/operateur/login" >Connexion opérateur</a>
-        
+        <a href="/operateur/login" class="d-block text-center">Connexion opérateur</a>
+
     </form>
 </div>
 
