@@ -7,6 +7,10 @@ use App\Models\ClientModel;
 use App\Models\HistoriqueModel;
 use App\Models\BaremeFraisModel;
 
+use App\Models\AutreOperateurModel;
+use App\Models\AutreOperateurPrefixeModel;
+use App\Models\CommissionExterneModel;
+
 
 class OperationController extends BaseController
 {
@@ -131,13 +135,29 @@ class OperationController extends BaseController
             return redirect()->to('/');
         }
 
-        $numeroDestinataire = $this->request->getPost('numero_destinataire');
+        $numeroDestinataire = trim($this->request->getPost('numero_destinataire'));
         $montant = (int) $this->request->getPost('montant');
+        $inclureFraisRetrait = (bool) $this->request->getPost('inclure_frais_retrait');
+
+        if (!preg_match('/^[0-9]{10}$/', $numeroDestinataire)) {
+            return redirect()->back()->with('erreur', 'Numéro destinataire invalide (10 chiffres requis)');
+        }
 
         if ($montant <= 0) {
             return redirect()->back()->with('erreur', 'Montant invalide');
         }
 
+        if ($numeroDestinataire === $client['numero']) {
+            return redirect()->back()->with('erreur', 'Impossible de transférer à vous-même');
+        }
+
+        $autreOperateur = $this->detecterAutreOperateur($numeroDestinataire);
+
+        if ($autreOperateur) {
+            return $this->transfertVersAutreOperateur($client, $numeroDestinataire, $montant, $autreOperateur);
+        }
+
+        // --- à partir d'ici, logique interne inchangée (destinataire local, bareme, frais_retrait_inclus) ---
         $clientModel = new ClientModel();
         $destinataire = $clientModel->where('numero', $numeroDestinataire)->first();
 
@@ -145,44 +165,84 @@ class OperationController extends BaseController
             return redirect()->back()->with('erreur', 'Numéro destinataire introuvable');
         }
 
-        if ($destinataire['id'] == $client['id']) {
-            return redirect()->back()->with('erreur', 'Impossible de transférer à vous-même');
-        }
-
         $baremeModel = new BaremeFraisModel();
-        $bareme = $baremeModel->getFrais(3, $montant); // 3 = TRANSFERT
+        $baremeTransfert = $baremeModel->getFrais(3, $montant);
 
-        if (!$bareme) {
+        if (!$baremeTransfert) {
             return redirect()->back()->with('erreur', 'Montant hors des tranches autorisées');
         }
 
-        $frais = $bareme['frais'];
-        $total = $montant + $frais;
+        $fraisTransfert = $baremeTransfert['frais'];
+        $fraisRetrait = 0;
 
-        if ($client['solde'] < $total) {
+        if ($inclureFraisRetrait) {
+            $baremeRetrait = $baremeModel->getFrais(2, $montant);
+            if ($baremeRetrait) {
+                $fraisRetrait = $baremeRetrait['frais'];
+            }
+        }
+
+        $totalDebit = $montant + $fraisTransfert + $fraisRetrait;
+        $montantCredit = $montant + $fraisRetrait;
+
+        if ($client['solde'] < $totalDebit) {
             return redirect()->back()->with('erreur', 'Solde insuffisant');
         }
 
-        // Débiter expéditeur
-        $clientModel->update($client['id'], ['solde' => $client['solde'] - $total]);
-
-        // Créditer destinataire
-        $clientModel->update($destinataire['id'], ['solde' => $destinataire['solde'] + $montant]);
+        $clientModel->update($client['id'], ['solde' => $client['solde'] - $totalDebit]);
+        $clientModel->update($destinataire['id'], ['solde' => $destinataire['solde'] + $montantCredit]);
 
         $historiqueModel = new HistoriqueModel();
         $historiqueModel->insert([
             'client_id' => $client['id'],
-            'type_operation_id' => 3, // TRANSFERT
+            'type_operation_id' => 3,
             'destinataire_id' => $destinataire['id'],
             'montant' => $montant,
-            'frais' => $frais,
+            'frais' => $fraisTransfert,
+            'frais_retrait_inclus' => $fraisRetrait,
             'date_operation' => date('Y-m-d H:i:s'),
         ]);
 
-        return redirect()->to('/client/dashboard')->with('succes', "Transfert de $montant Ar effectué (frais : $frais Ar)");
+        $message = "Transfert de $montant Ar effectué (frais : $fraisTransfert Ar)";
+        if ($fraisRetrait > 0) {
+            $message .= " — frais de retrait inclus : $fraisRetrait Ar";
+        }
+
+        return redirect()->to('/client/dashboard')->with('succes', $message);
     }
 
+    protected function transfertVersAutreOperateur($client, $numeroDestinataire, $montant, $autreOperateur)
+    {
+        $commissionModel = new CommissionExterneModel();
+        $pourcentage = $commissionModel->getPourcentage();
+        $commission = (int) round($montant * $pourcentage / 100);
 
+        $totalDebit = $montant + $commission;
+
+        if ($client['solde'] < $totalDebit) {
+            return redirect()->back()->with('erreur', 'Solde insuffisant');
+        }
+
+        $clientModel = new ClientModel();
+        $clientModel->update($client['id'], ['solde' => $client['solde'] - $totalDebit]);
+
+        $historiqueModel = new HistoriqueModel();
+        $historiqueModel->insert([
+            'client_id' => $client['id'],
+            'type_operation_id' => 3,
+            'destinataire_id' => null,
+            'autre_operateur_id' => $autreOperateur['id'],
+            'numero_destinataire_externe' => $numeroDestinataire,
+            'montant' => $montant,
+            'frais' => 0,
+            'commission' => $commission,
+            'frais_retrait_inclus' => 0,
+            'date_operation' => date('Y-m-d H:i:s'),
+        ]);
+
+        return redirect()->to('/client/dashboard')
+            ->with('succes', "Transfert de $montant Ar vers {$autreOperateur['nom']} effectué (commission : $commission Ar)");
+    }
 
     //historique
     public function historique()
@@ -297,5 +357,19 @@ class OperationController extends BaseController
         }
 
         return redirect()->to('/client/dashboard')->with('succes', "Envoi multiple effectué vers $nombreDestinataires destinataires");
+    }
+
+    protected function detecterAutreOperateur($numero)
+    {
+        $prefixe = substr($numero, 0, 3);
+        $prefixeModel = new AutreOperateurPrefixeModel();
+        $trouve = $prefixeModel->where('prefixe', $prefixe)->first();
+
+        if (!$trouve) {
+            return null;
+        }
+
+        $operateurModel = new AutreOperateurModel();
+        return $operateurModel->find($trouve['autre_operateur_id']);
     }
 }

@@ -31,8 +31,18 @@
                                     <?php if ($op['frais_retrait_inclus'] > 0): ?>
                                     <?php endif; ?>
                                 </td>
-                                <td><?= number_format($op['frais'], 0, ',', ' ') ?> Ar</td>
-                                <td><?= $op['destinataire_numero'] ? esc($op['destinataire_numero']) : '-' ?></td>
+                                <td><?= number_format($op['frais'] + $op['commission'], 0, ',', ' ') ?> Ar</td>
+                                <td>
+                                    <?php if (!empty($op['destinataire_numero'])): ?>
+                                        <?= esc($op['destinataire_numero']) ?>
+                                    <?php elseif (!empty($op['numero_destinataire_externe'])): ?>
+                                        <?= esc($op['numero_destinataire_externe']) ?>
+                                        <br><small class="link-muted"><?= esc($op['autre_operateur_nom']) ?></small>
+                                    <?php else: ?>
+                                        -
+                                    <?php endif; ?>
+                                </td>
+
                             </tr>
                         <?php endforeach; ?>
 
@@ -46,6 +56,6 @@
             </div>
         </div>
 
-<a href="/client/dashboard" class="link-muted d-block text-center mt-3">Retour au tableau de bord</a>
+        <a href="/client/dashboard" class="link-muted d-block text-center mt-3">Retour au tableau de bord</a>
 
         <?= view('partials/footer') ?>

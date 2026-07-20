@@ -11,11 +11,12 @@
 
 <body>
     <div class="admin-nav">
-        <div class="brand"><span class="brand-mark">AS</span> <a href="/operateur/dashboard"> Espace Opérateur </a></div>
+        <div class="brand"><a href="/operateur/dashboard"> Espace Opérateur </a></div>
         <a href="/operateur/prefixes">Préfixes</a>
         <a href="/operateur/types-operation">Types d'opération</a>
         <a href="/operateur/clients">Comptes clients</a>
         <a href="/operateur/gains">Situation des gains</a>
+        <a href="/auth/logout" class="logout-link">Déconnexion</a>
     </div>
 
     <div class="container">
