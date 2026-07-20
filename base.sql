@@ -43,8 +43,8 @@ CREATE TABLE historique (
 
 
 INSERT INTO prefixe (prefixe) VALUES
-('033'),
-('037');
+('034'),
+('038');
 
 INSERT INTO type_operation (nom) VALUES
 ('DEPOT'),
