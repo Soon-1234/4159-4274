@@ -1,5 +1,6 @@
 ------ Tsara ------
 - Création des tables ( table.sql - racine - )
+
 ------Leila------
 # Création des migrations 
 
@@ -24,3 +25,7 @@ php spark db:seed DatabaseSeeder
 # en cas de problèmes de fafana ny base de manao an'ito 
 php spark migrate:refresh
 php spark db:seed DatabaseSeeder
+
+
+-- Tsara -- 
+Login côté clients (Routes.php , clients/AuthController/ )
