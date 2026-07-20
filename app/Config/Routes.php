@@ -16,6 +16,7 @@ $routes->get('operateur/logout', 'Operateurs\AuthController::logout');
 
 // Routes opérateur protégées
 $routes->group('operateur', ['filter' => 'auth:operateur'], function ($routes) {
+    $routes->get('dashboard', 'Operateurs\DashboardController::index');
     $routes->get('prefixes', 'Operateurs\PrefixeController::index');
     $routes->post('prefixes/store', 'Operateurs\PrefixeController::store');
     $routes->post('prefixes/delete/(:num)', 'Operateurs\PrefixeController::delete/$1');
@@ -34,7 +35,7 @@ $routes->group('operateur', ['filter' => 'auth:operateur'], function ($routes) {
     $routes->post('prefixes/update/(:num)', 'Operateurs\PrefixeController::update/$1');
     $routes->get('clients', 'Operateurs\ClientController::index');
 
-    $routes->get('gains', 'Operateurs\GainController::index'); 
+    $routes->get('gains', 'Operateurs\GainController::index');
 });
 
 
@@ -58,6 +59,4 @@ $routes->group('client', ['filter' => 'auth:client'], function ($routes) {
 
     //historique
     $routes->get('historique', 'Clients\OperationController::historique');
-
-    
 });
