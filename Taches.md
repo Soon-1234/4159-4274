@@ -123,3 +123,16 @@ D. Interface
  Ajouter un bouton Espace client.
  Créer les tableaux de bord.
  Utiliser Bootstrap.
+
+
+
+
+
+
+
+
+
+
+ --------------------V2---------------
+ Migration:
+ php spark make:migration AddFraisRetraitInclusToHistorique

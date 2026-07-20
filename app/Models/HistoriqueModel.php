@@ -14,6 +14,7 @@ class HistoriqueModel extends Model
         'destinataire_id',
         'montant',
         'frais',
+        'frais_retrait_inclus',
         'date_operation'
     ];
     protected $returnType = 'array';

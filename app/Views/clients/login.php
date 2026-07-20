@@ -14,11 +14,11 @@
         <?= csrf_field() ?>
         <div class="mb-3">
             <label>Numéro de téléphone</label>
-            <input type="text" name="numero" class="form-control" placeholder="034 XX XXX XX" required>
+            <input type="text" name="numero" class="form-control" placeholder="034 XX XXX XX" maxlength="10" pattern="[0-9]{10}" required>
         </div>
         <button type="submit" class="btn btn-brand w-100">Se connecter</button>
-        <a href="/operateur/login" >Connexion opérateur</a>
-        
+        <a href="/operateur/login">Connexion opérateur</a>
+
     </form>
 </div>
 
