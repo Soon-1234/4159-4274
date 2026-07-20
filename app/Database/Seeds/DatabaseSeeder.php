@@ -12,5 +12,7 @@ class DatabaseSeeder extends Seeder
         $this->call('TypeOperationSeeder');
         $this->call('BaremeFraisSeeder');
         $this->call('OperateurSeeder');
+        $this->call('AutreOperateurSeeder');
+        $this->call('CommissionExterneSeeder');
     }
 }
