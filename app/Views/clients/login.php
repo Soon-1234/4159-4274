@@ -2,8 +2,7 @@
 
 <div class="auth-card">
     <div class="text-center mb-4">
-        <div class="brand-mark-lg">MM</div>
-        <h1 class="auth-title">Mobile Money</h1>
+        <h1 class="auth-title">Connexion</h1>
         <p class="auth-subtitle">Connectez-vous avec votre numéro</p>
     </div>
 
