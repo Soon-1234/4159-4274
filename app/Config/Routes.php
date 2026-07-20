@@ -66,8 +66,4 @@ $routes->group('client', ['filter' => 'auth:client'], function ($routes) {
 
     //historique
     $routes->get('historique', 'Clients\OperationController::historique');
-
-    //evoi multiple
-    $routes->get('envoi-multiple', 'Clients\OperationController::envoiMultiple');
-    $routes->post('envoi-multiple/valider', 'Clients\OperationController::envoiMultipleValider');
 });

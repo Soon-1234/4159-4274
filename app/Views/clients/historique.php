@@ -5,10 +5,8 @@
 <div class="balance-card balance-card-sm">
     <div class="label">Solde actuel</div>
     <div class="amount"><?= number_format($client['solde'], 0, ',', ' ') ?> Ar</div>
-    
 </div>
- <a href="/client/dashboard" class="link-muted d-block text-end"><- Retour</a>
- 
+
 <div class="card-panel table-panel">
     <div class="table-responsive">
         <table class="table">
@@ -42,6 +40,6 @@
     </div>
 </div>
 
-
+<a href="/client/dashboard" class="link-muted d-block text-center mt-3">Retour au tableau de bord</a>
 
 <?= view('partials/footer') ?>
