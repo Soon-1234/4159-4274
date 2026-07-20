@@ -6,9 +6,9 @@ use CodeIgniter\Router\RouteCollection;
 // $routes->get('/', 'Home::index');
 
 
-$routes->get('/', 'Clients\Auth::login');
-$routes->post('/auth/verifier', 'Clients\Auth::verifier');
-$routes->get('/auth/logout', 'Clients\Auth::logout');
+$routes->get('/', 'Clients\AuthController::login');
+$routes->post('/auth/verifier', 'Clients\AuthController::verifier');
+$routes->get('/auth/logout', 'Clients\AuthController::logout');
 
 
 $routes->get('/client/dashboard', 'Clients\DashboardController::index');
