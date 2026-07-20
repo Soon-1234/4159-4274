@@ -29,7 +29,6 @@ $routes->group('operateur', ['filter' => 'auth:operateur'], function ($routes) {
     $routes->post('autres-operateurs/prefixes/(:num)/store', 'Operateurs\AutreOperateurController::storePrefixe/$1');
     $routes->post('autres-operateurs/prefixes/delete/(:num)', 'Operateurs\AutreOperateurController::deletePrefixe/$1');
     $routes->get('types-operation', 'Operateurs\TypeOperationController::index');
-    $routes->get('envois-operateurs', 'Operateurs\EnvoiOperateurController::index');
     $routes->get('baremes/(:num)', 'Operateurs\BaremeFraisController::index/$1');
     $routes->post('baremes/(:num)/store', 'Operateurs\BaremeFraisController::store/$1');
     $routes->post('baremes/update/(:num)', 'Operateurs\BaremeFraisController::update/$1');
