@@ -34,17 +34,16 @@ class GainController extends BaseController
         }
 
         $commissionsExternesQuery = "
-        SELECT 
-            p.nom_operateur as operateur,
-            COUNT(*) as nb_transferts,
-            COALESCE(SUM(h.commission_due), 0) as total_commission
-        FROM historique h
-        LEFT JOIN autre_operateur_prefixe p ON h.prefixe_destinataire = p.code_prefixe
-        WHERE h.date_operation BETWEEN ? AND ?
-          AND p.nom_operateur IS NOT NULL
-          AND h.commission_due > 0
-        GROUP BY p.id
-        ORDER BY p.nom_operateur ASC
+      SELECT 
+    ao.nom AS operateur,
+    COUNT(*) as nb_transferts,
+    COALESCE(SUM(h.commission), 0) as total_commission
+    FROM historique h
+    JOIN autre_operateur ao ON ao.id = h.autre_operateur_id
+    WHERE h.date_operation BETWEEN ? AND ?
+    AND h.commission > 0
+    GROUP BY ao.id
+    ORDER BY ao.nom ASC
     ";
 
         try {

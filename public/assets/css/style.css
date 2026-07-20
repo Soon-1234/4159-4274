@@ -51,11 +51,12 @@ body {
     padding: 0.85rem 1.5rem;
     display: flex;
     align-items: center;
+    
     box-shadow: var(--shadow);
 }
 
 .topbar { justify-content: space-between; }
-.admin-nav { gap: 1.5rem; flex-wrap: wrap; }
+.admin-nav { gap: 1.5rem; flex-wrap: wrap;  }
 
 .topbar .brand, .admin-nav .brand {
     color: #fff;
