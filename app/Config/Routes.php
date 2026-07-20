@@ -5,6 +5,7 @@ use CodeIgniter\Router\RouteCollection;
 /** @var RouteCollection $routes */
 // $routes->get('/', 'Home::index');
 
+
 //login
 $routes->get('/', 'Clients\AuthController::login');
 $routes->post('/auth/verifier', 'Clients\AuthController::verifier');
