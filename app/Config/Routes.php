@@ -34,7 +34,9 @@ $routes->group('operateur', ['filter' => 'auth:operateur'], function ($routes) {
     $routes->post('baremes/(:num)/store', 'Operateurs\BaremeFraisController::store/$1');
     $routes->post('baremes/update/(:num)', 'Operateurs\BaremeFraisController::update/$1');
     $routes->post('baremes/delete/(:num)', 'Operateurs\BaremeFraisController::delete/$1');
-
+    $routes->get('prefixes', 'Operateurs\PrefixeController::index');
+    $routes->post('prefixes/store', 'Operateurs\PrefixeController::store');
+    $routes->post('prefixes/delete/(:num)', 'Operateurs\PrefixeController::delete/$1');
     $routes->get('clients', 'Operateurs\ClientController::index');
 
     $routes->get('gains', 'Operateurs\GainController::index');
