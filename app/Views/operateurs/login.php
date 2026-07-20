@@ -30,6 +30,7 @@
                 <input type="password" name="mot_de_passe" class="form-control" required>
             </div>
             <button type="submit" class="btn-brand w-100">Se connecter</button>
+            <a href="/" class="d-block text-center">login_client</a>
         </form>
     </div>
 </div>
