@@ -1,45 +1,61 @@
-<?= view('partials/header', ['title' => 'Historique', 'client' => $client]) ?>
+<?= view('partials/header', ['title' => 'Historique', 'client' => $client, 'wide' => true]) ?>
 
 <h1 class="page-title">Historique des opérations</h1>
 
 <div class="balance-card balance-card-sm">
     <div class="label">Solde actuel</div>
     <div class="amount"><?= number_format($client['solde'], 0, ',', ' ') ?> Ar</div>
+
 </div>
+<a href="/client/dashboard" class="link-muted d-block text-end"><- Retour</a>
 
-<div class="card-panel table-panel">
-    <div class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Type</th>
-                    <th>Montant</th>
-                    <th>Frais</th>
-                    <th>Destinataire</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($operations as $op): ?>
-                <tr>
-                    <td><?= esc($op['date_operation']) ?></td>
-                    <td><span class="badge-type"><?= esc($op['type_nom']) ?></span></td>
-                    <td><?= number_format($op['montant'], 0, ',', ' ') ?> Ar</td>
-                    <td><?= number_format($op['frais'], 0, ',', ' ') ?> Ar</td>
-                    <td><?= $op['destinataire_numero'] ? esc($op['destinataire_numero']) : '-' ?></td>
-                </tr>
-                <?php endforeach; ?>
+        <div class="card-panel table-panel">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Montant</th>
+                            <th>Frais</th>
+                            <th>Destinataire</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($operations as $op): ?>
+                            <tr>
+                                <td><?= esc($op['date_operation']) ?></td>
+                                <td><span class="badge-type"><?= esc($op['type_nom']) ?></span></td>
+                                <td>
+                                    <?= number_format($op['montant'] + $op['frais_retrait_inclus'], 0, ',', ' ') ?> Ar
+                                    <?php if ($op['frais_retrait_inclus'] > 0): ?>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?= number_format($op['frais'] + $op['commission'], 0, ',', ' ') ?> Ar</td>
+                                <td>
+                                    <?php if (!empty($op['destinataire_numero'])): ?>
+                                        <?= esc($op['destinataire_numero']) ?>
+                                    <?php elseif (!empty($op['numero_destinataire_externe'])): ?>
+                                        <?= esc($op['numero_destinataire_externe']) ?>
+                                        <br><small class="link-muted"><?= esc($op['autre_operateur_nom']) ?></small>
+                                    <?php else: ?>
+                                        -
+                                    <?php endif; ?>
+                                </td>
 
-                <?php if (empty($operations)): ?>
-                <tr>
-                    <td colspan="5" class="text-center text-muted py-4">Aucune opération pour le moment</td>
-                </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
-</div>
+                            </tr>
+                        <?php endforeach; ?>
 
-<a href="/client/dashboard" class="link-muted d-block text-center mt-3">Retour au tableau de bord</a>
+                        <?php if (empty($operations)): ?>
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">Aucune opération pour le moment</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-<?= view('partials/footer') ?>
+        <a href="/client/dashboard" class="link-muted d-block text-center mt-3">Retour au tableau de bord</a>
+
+        <?= view('partials/footer') ?>

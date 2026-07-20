@@ -123,3 +123,47 @@ D. Interface
  Ajouter un bouton Espace client.
  Créer les tableaux de bord.
  Utiliser Bootstrap.
+
+ ==================================================================== VERSION 2
+ # Création des seed 
+ php spark make:seeder AutreOperateurSeeder
+php spark make:seeder CommissionExterneSeeder
+
+# Création des migrations 
+ php spark make:migration AddCommissionToHistoriqueTable
+ php spark make:migration CreateAutreOperateurTable
+ php spark make:migration CreateAutreOperateurPrefixeTable
+ php spark make:migration CreateCommissionExterneTable
+
+---- Leila --------
+ Côté Opérateur
+Gestion des autres opérateurs
+
+Créer une page pour ajouter les préfixes des autres réseaux (ex: Orange 032, Telma 031).
+Créer une page pour définir le pourcentage (%) de commission supplémentaire pour chaque réseau externe.
+Ajouter les routes dans Routes.php pour accéder à ces pages.
+Rapports et Gains
+
+Modifier la page "Situation des gains" : créer deux tableaux séparés (un pour l'opérateur actuel, un pour les autres).
+Créer une nouvelle page "À payer aux autres opérateurs" qui liste les montants totaux dus par chaque réseau externe.
+Ajouter les routes pour ces nouvelles pages de rapports.
+
+------------Tsara ---------
+ Côté Client
+Option "Frais inclus"
+
+Ajouter une case à cocher ("Inclure les frais de retrait") sur la page d'envoi d'argent.
+Modifier le calcul du montant total à déduire si la case est cochée.
+Envoi Multiple
+
+Créer ou modifier la vue d'envoi pour permettre d'ajouter plusieurs numéros de téléphone en même temps.
+Faire le calcul automatique qui divise le montant total par le nombre de bénéficiaires (ou permet de définir un montant par personne).
+Mettre à jour le contrôleur pour traiter cette liste de numéros en une seule transaction.
+Ajouter la route /envoie-frais-client (si ce n'est pas déjà fait) pour accéder à cette fonctionnalité.
+
+ Configuration & Base de données
+Base de données
+
+Créer/Modifier les tables pour stocker les préfixes externes et leurs taux de commission.
+Vérifier que la table historique peut bien enregistrer plusieurs transactions liées à un même envoi multiple.
+Sécurité & Accès

@@ -25,6 +25,7 @@
                         <form class="inline" action="/operateur/prefixes/delete/<?= $p['id'] ?>" method="post" onsubmit="return confirm('Supprimer ce préfixe ?');">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-danger">Supprimer</button>
+                            <a class="btn" href="/operateur/prefixes/edit/<?= $p['id'] ?>">Modifier</a>
                         </form>
                     </td>
                 </tr>
