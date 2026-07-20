@@ -16,30 +16,17 @@ $routes->get('operateur/logout', 'Operateurs\AuthController::logout');
 
 // Routes opérateur protégées
 $routes->group('operateur', ['filter' => 'auth:operateur'], function ($routes) {
-    $routes->get('dashboard', 'Operateurs\DashboardController::index');
     $routes->get('prefixes', 'Operateurs\PrefixeController::index');
     $routes->post('prefixes/store', 'Operateurs\PrefixeController::store');
     $routes->post('prefixes/delete/(:num)', 'Operateurs\PrefixeController::delete/$1');
-    $routes->post('types-operation/store', 'Operateurs\TypeOperationController::store');
-    $routes->get('types-operation/edit/(:num)', 'Operateurs\TypeOperationController::edit/$1');
-    $routes->post('types-operation/update/(:num)', 'Operateurs\TypeOperationController::update/$1');
-    $routes->post('types-operation/delete/(:num)', 'Operateurs\TypeOperationController::delete/$1');
-    $routes->get('autres-operateurs', 'Operateurs\AutreOperateurController::index');
-    $routes->post('autres-operateurs/store', 'Operateurs\AutreOperateurController::store');
-    $routes->post('autres-operateurs/delete/(:num)', 'Operateurs\AutreOperateurController::delete/$1');
-    $routes->post('autres-operateurs/commission', 'Operateurs\AutreOperateurController::updateCommission');
-    $routes->get('autres-operateurs/prefixes/(:num)', 'Operateurs\AutreOperateurController::prefixes/$1');
-    $routes->post('autres-operateurs/prefixes/(:num)/store', 'Operateurs\AutreOperateurController::storePrefixe/$1');
-    $routes->post('autres-operateurs/prefixes/delete/(:num)', 'Operateurs\AutreOperateurController::deletePrefixe/$1');
-    $routes->get('envois-operateurs', 'Operateurs\EnvoiOperateurController::index');
+
     $routes->get('types-operation', 'Operateurs\TypeOperationController::index');
 
     $routes->get('baremes/(:num)', 'Operateurs\BaremeFraisController::index/$1');
     $routes->post('baremes/(:num)/store', 'Operateurs\BaremeFraisController::store/$1');
     $routes->post('baremes/update/(:num)', 'Operateurs\BaremeFraisController::update/$1');
     $routes->post('baremes/delete/(:num)', 'Operateurs\BaremeFraisController::delete/$1');
-    $routes->get('prefixes/edit/(:num)', 'Operateurs\PrefixeController::edit/$1');
-    $routes->post('prefixes/update/(:num)', 'Operateurs\PrefixeController::update/$1');
+
     $routes->get('clients', 'Operateurs\ClientController::index');
 
     $routes->get('gains', 'Operateurs\GainController::index');
@@ -66,4 +53,8 @@ $routes->group('client', ['filter' => 'auth:client'], function ($routes) {
 
     //historique
     $routes->get('historique', 'Clients\OperationController::historique');
+
+    //evoi multiple
+    $routes->get('envoi-multiple', 'Clients\OperationController::envoiMultiple');
+    $routes->post('envoi-multiple/valider', 'Clients\OperationController::envoiMultipleValider');
 });
