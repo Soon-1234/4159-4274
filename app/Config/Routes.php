@@ -19,6 +19,10 @@ $routes->group('operateur', ['filter' => 'auth:operateur'], function ($routes) {
     $routes->get('prefixes', 'Operateurs\PrefixeController::index');
     $routes->post('prefixes/store', 'Operateurs\PrefixeController::store');
     $routes->post('prefixes/delete/(:num)', 'Operateurs\PrefixeController::delete/$1');
+    $routes->post('types-operation/store', 'Operateurs\TypeOperationController::store');
+    $routes->get('types-operation/edit/(:num)', 'Operateurs\TypeOperationController::edit/$1');
+    $routes->post('types-operation/update/(:num)', 'Operateurs\TypeOperationController::update/$1');
+    $routes->post('types-operation/delete/(:num)', 'Operateurs\TypeOperationController::delete/$1');
 
     $routes->get('types-operation', 'Operateurs\TypeOperationController::index');
 
@@ -26,7 +30,8 @@ $routes->group('operateur', ['filter' => 'auth:operateur'], function ($routes) {
     $routes->post('baremes/(:num)/store', 'Operateurs\BaremeFraisController::store/$1');
     $routes->post('baremes/update/(:num)', 'Operateurs\BaremeFraisController::update/$1');
     $routes->post('baremes/delete/(:num)', 'Operateurs\BaremeFraisController::delete/$1');
-
+    $routes->get('prefixes/edit/(:num)', 'Operateurs\PrefixeController::edit/$1');
+    $routes->post('prefixes/update/(:num)', 'Operateurs\PrefixeController::update/$1');
     $routes->get('clients', 'Operateurs\ClientController::index');
 
     $routes->get('gains', 'Operateurs\GainController::index'); 
