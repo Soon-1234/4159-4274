@@ -83,6 +83,10 @@ B. Côté opérateur
  Créer la page de connexion opérateur.
  Vérifier les identifiants.
  Accéder au tableau de bord opérateur.
+
+ connexion : admin,mdp:admin1234
+
+
 2. Gestion des préfixes
  Ajouter un préfixe.
  Modifier un préfixe.
