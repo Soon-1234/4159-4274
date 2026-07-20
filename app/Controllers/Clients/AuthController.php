@@ -15,7 +15,11 @@ class AuthController extends BaseController
 
     public function verifier()
     {
-        $numero = $this->request->getPost('numero');
+        $numero = trim($this->request->getPost('numero'));
+
+        if (!preg_match('/^[0-9]{10}$/', $numero)) {
+            return redirect()->back()->with('erreur', 'Le numéro doit contenir exactement 10 chiffres');
+        }
 
         $prefixeModel = new PrefixeModel();
         $clientModel = new ClientModel();
@@ -48,4 +52,7 @@ class AuthController extends BaseController
         session()->destroy();
         return redirect()->to('/');
     }
+
+
+
 }
