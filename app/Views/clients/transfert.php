@@ -1,19 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Transfert</title>
-</head>
-<body>
-<div class="container mt-5">
-    <h2>Effectuer un transfert</h2>
+<?= view('partials/header', ['title' => 'Transfert', 'client' => $client]) ?>
 
-    <?php if (session()->getFlashdata('erreur')): ?>
-        <div class="alert alert-danger"><?= session()->getFlashdata('erreur') ?></div>
-    <?php endif; ?>
+<h1 class="page-title">Effectuer un transfert</h1>
 
-    <p>Solde actuel : <?= number_format($client['solde'], 0, ',', ' ') ?> Ar</p>
+<?php if (session()->getFlashdata('erreur')): ?>
+    <div class="alert alert-danger"><?= session()->getFlashdata('erreur') ?></div>
+<?php endif; ?>
 
-    <form action="/client/transfert/valider" method="post">
+<div class="balance-card balance-card-sm">
+    <div class="label">Solde actuel</div>
+    <div class="amount"><?= number_format($client['solde'], 0, ',', ' ') ?> Ar</div>
+</div>
+
+<div class="card-panel">
+    <form action="/client/transfert/valider" method="post" data-confirm="Confirmer ce transfert ?">
         <?= csrf_field() ?>
         <div class="mb-3">
             <label>Numéro du destinataire</label>
@@ -23,9 +22,9 @@
             <label>Montant à transférer</label>
             <input type="number" name="montant" class="form-control" required min="1">
         </div>
-        <button type="submit" class="btn btn-primary">Confirmer le transfert</button>
-        <a href="/client/dashboard" class="btn btn-secondary">Annuler</a>
+        <button type="submit" class="btn btn-brand w-100">Confirmer le transfert</button>
+        <a href="/client/dashboard" class="link-muted d-block text-center mt-3">Annuler</a>
     </form>
 </div>
-</body>
-</html> 
+
+<?= view('partials/footer') ?>

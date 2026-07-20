@@ -1,25 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Mon compte</title>
-</head>
-<body>
-<div class="container mt-5">
-    <h2>Bienvenue, <?= esc($client['numero']) ?></h2>
+<?= view('partials/header', ['title' => 'Mon compte', 'client' => $client]) ?>
 
-    <?php if (session()->getFlashdata('succes')): ?>
+<?php if (session()->getFlashdata('succes')): ?>
     <div class="alert alert-success"><?= session()->getFlashdata('succes') ?></div>
 <?php endif; ?>
 
-    <div class="alert alert-info">
-        Solde actuel : <strong><?= number_format($client['solde'], 0, ',', ' ') ?> Ar</strong>
-    </div>
-
-    <a href="/client/depot" class="btn btn-success">Dépôt</a>
-    <a href="/client/retrait" class="btn btn-warning">Retrait</a>
-    <a href="/client/transfert" class="btn btn-primary">Transfert</a>
-    <a href="/client/historique" class="btn btn-secondary">Historique</a>
-    <a href="/auth/logout" class="btn btn-outline-danger">Déconnexion</a>
+<div class="balance-card">
+    <div class="label">Solde disponible</div>
+    <div class="amount"><?= number_format($client['solde'], 0, ',', ' ') ?> Ar</div>
+    <div class="owner">Bienvenue, <?= esc($client['numero']) ?></div>
 </div>
-</body>
-</html>
+
+<div class="card-panel">
+    <h2 class="section-title">Opérations</h2>
+    <div class="actions-grid">
+        <a href="/client/depot" class="action-btn"><span class="action-icon">＋</span>Dépôt</a>
+        <a href="/client/retrait" class="action-btn"><span class="action-icon">－</span>Retrait</a>
+        <a href="/client/transfert" class="action-btn"><span class="action-icon">⇄</span>Transfert</a>
+        <a href="/client/historique" class="action-btn"><span class="action-icon">≡</span>Historique</a>
+    </div>
+</div>
+
+<?= view('partials/footer') ?>

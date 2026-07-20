@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Mobile Money - Connexion</title>
-</head>
-<body>
-<div class="container">
-    <h2>Connexion</h2>
+<?= view('partials/header', ['title' => 'Connexion', 'variant' => 'auth']) ?>
+
+<div class="auth-card">
+    <div class="text-center mb-4">
+        <div class="brand-mark-lg">MM</div>
+        <h1 class="auth-title">Mobile Money</h1>
+        <p class="auth-subtitle">Connectez-vous avec votre numéro</p>
+    </div>
 
     <?php if (session()->getFlashdata('erreur')): ?>
         <div class="alert alert-danger"><?= session()->getFlashdata('erreur') ?></div>
@@ -15,10 +15,10 @@
         <?= csrf_field() ?>
         <div class="mb-3">
             <label>Numéro de téléphone</label>
-            <input type="text" name="numero" class="form-control" required>
+            <input type="text" name="numero" class="form-control" placeholder="034 XX XXX XX" required>
         </div>
-        <button type="submit" class="btn btn-primary">Se connecter</button>
+        <button type="submit" class="btn btn-brand w-100">Se connecter</button>
     </form>
 </div>
-</body>
-</html>
+
+<?= view('partials/footer') ?>
