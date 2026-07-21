@@ -30,7 +30,7 @@ class AuthController extends BaseController
             'isOperateurLoggedIn' => true,
         ]);
 
-        return redirect()->to('/operateur/dashboard');    }
+        return redirect()->to('/operateur/prefixes');    }
 
     public function logout()
     {

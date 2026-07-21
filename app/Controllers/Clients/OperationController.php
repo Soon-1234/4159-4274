@@ -10,6 +10,7 @@ use App\Models\BaremeFraisModel;
 use App\Models\Operateurs\AutreOperateurModel;
 use App\Models\Operateurs\AutreOperateurPrefixeModel;
 use App\Models\Operateurs\CommissionExterneModel;
+use App\Models\Operateurs\PromotionModel;
 
 class OperationController extends BaseController
 {
@@ -178,8 +179,13 @@ class OperationController extends BaseController
             return redirect()->back()->with('erreur', 'Montant hors des tranches autorisées');
         }
 
-        $fraisTransfert = $baremeTransfert['frais'];
+        $fraisTransfert = $baremeTransfert['frais'] ;
         $fraisRetrait = 0;
+        $promotion = $fraisTransfert ? (float) $fraisTransfert['pourcentage'] : 0;
+
+        if($promotion == 1){
+            $fraisTransfert =  $fraisTransfert + $promotion;
+        }
 
         if ($inclureFraisRetrait) {
             $baremeRetrait = $baremeModel->getFrais(2, $montant);
@@ -387,5 +393,21 @@ class OperationController extends BaseController
 
         $operateurModel = new AutreOperateurModel();
         return $operateurModel->find($trouve['autre_operateur_id']);
+    }
+
+     public function getPromotion()
+    {
+        $PromotionModel = new PromotionModel();
+        $promotion = $this->request->getPost('promotion');
+
+        $promotion = $PromotionModel->first();
+
+        if ($promotion) {
+            $PromotionModel->update($promotion['id'], ['promotion' => $promotion]);
+        } else {
+            $PromotionModel->insert(['promotion' => $promotion]);
+        }
+
+        return redirect()->to('/operateur/autres-operateurs')->with('succes', 'promotion mise à jour.');
     }
 }

@@ -14,5 +14,6 @@ class DatabaseSeeder extends Seeder
         $this->call('OperateurSeeder');
         $this->call('AutreOperateurSeeder');
         $this->call('CommissionExterneSeeder');
+        $this->call('PromotionSeeder');
     }
 }

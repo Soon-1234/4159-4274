@@ -5,7 +5,6 @@
 <div class="container-fluid p-4">
     <h1 class="mb-4">Situation des gains et commissions</h1>
 
-    <!-- Formulaire de filtrage -->
     <form class="d-flex gap-3 align-items-center mb-4 p-3 bg-light rounded border" action="/operateur/gains" method="get">
         <div>
             <label for="date_debut" class="form-label mb-0">Du</label>
@@ -108,5 +107,6 @@
     </div>
 
 </div>
+
 
 <?= $this->endSection() ?>

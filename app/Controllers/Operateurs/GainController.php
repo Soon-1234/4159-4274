@@ -61,6 +61,7 @@ class GainController extends BaseController
             $totalGeneral += $val;
         }
 
+        
         return view('operateurs/gain', [
             'dateDebut' => $dateDebut,
             'dateFin' => $dateFin,

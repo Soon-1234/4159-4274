@@ -167,3 +167,13 @@ Base de données
 Créer/Modifier les tables pour stocker les préfixes externes et leurs taux de commission.
 Vérifier que la table historique peut bien enregistrer plusieurs transactions liées à un même envoi multiple.
 Sécurité & Accès
+
+
+git add .
+git commit -m "Mon travail"
+git push origin works
+
+git checkout main
+git pull origin main
+git merge works
+git push origin main

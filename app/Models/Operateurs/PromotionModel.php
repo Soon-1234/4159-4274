@@ -4,10 +4,10 @@ namespace App\Models\Operateurs;
 
 use CodeIgniter\Model;
 
-class CommissionExterneModel extends Model
+class PromotionModel extends Model
 {
-    protected $table = 'commission_externe';
+    protected $table = 'promotion';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['pourcentage' ];
+    protected $allowedFields = ['id_transfert','promotion' ];
     protected $returnType = 'array';
 }

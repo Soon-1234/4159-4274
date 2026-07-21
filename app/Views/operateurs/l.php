@@ -12,14 +12,9 @@
 
 <body>
     <div class="admin-nav">
-
-        <div class="brand">
-            <span>AR'send</span>
-        </div>
-
-            <a href="/operateur/prefixes">Préfixes</a>
-            <a href="/operateur/types-operation">Types d'opération</a>
-            <a href="/operateur/clients">Comptes clients</a>
+        <a href="/operateur/prefixes">Préfixes</a>
+        <a href="/operateur/types-operation">Types d'opération</a>
+        <a href="/operateur/clients">Comptes clients</a>
 
         <details class="menu-deroulant">
             <summary>Plus ▾</summary>
