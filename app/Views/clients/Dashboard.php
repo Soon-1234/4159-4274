@@ -18,6 +18,7 @@
         <a href="/client/transfert" class="action-btn"><span class="action-icon">⇄</span>Transfert</a>
         <a href="/client/historique" class="action-btn"><span class="action-icon">≡</span>Historique</a>
         <a href="/client/envoi-multiple" class="action-btn"><span class="action-icon">⇉</span>Envoi multiple</a>
+        <a href="/client/epargne" class="action-btn"></span>Epargne</a>
     </div>
 </div>
 
