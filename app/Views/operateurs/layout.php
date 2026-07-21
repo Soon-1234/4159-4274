@@ -11,7 +11,7 @@
 
 <body>
     <div class="admin-nav">
-        <div class="brand"><a href="/operateur/dashboard"> Espace Opérateur </a></div>
+        <div class="brand"><a href="/operateur/dashboard"> Accueil </a></div>
         <a href="/operateur/prefixes">Préfixes</a>
         <a href="/operateur/types-operation">Types d'opération</a>
         <a href="/operateur/clients">Comptes clients</a>

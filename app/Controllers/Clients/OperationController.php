@@ -7,10 +7,9 @@ use App\Models\ClientModel;
 use App\Models\HistoriqueModel;
 use App\Models\BaremeFraisModel;
 
-use App\Models\AutreOperateurModel;
-use App\Models\AutreOperateurPrefixeModel;
-use App\Models\CommissionExterneModel;
-
+use App\Models\Operateurs\AutreOperateurModel;
+use App\Models\Operateurs\AutreOperateurPrefixeModel;
+use App\Models\Operateurs\CommissionExterneModel;
 
 class OperationController extends BaseController
 {
@@ -125,7 +124,14 @@ class OperationController extends BaseController
         if (!$client) {
             return redirect()->to('/');
         }
-        return view('clients/transfert', ['client' => $client]);
+
+        $prefixeExterneModel = new AutreOperateurPrefixeModel();
+        $prefixesExternes = array_column($prefixeExterneModel->findAll(), 'prefixe');
+
+        return view('clients/transfert', [
+            'client' => $client,
+            'prefixesExternes' => $prefixesExternes,
+        ]);
     }
 
     public function transfertValider()
@@ -213,11 +219,21 @@ class OperationController extends BaseController
 
     protected function transfertVersAutreOperateur($client, $numeroDestinataire, $montant, $autreOperateur)
     {
+        $baremeModel = new BaremeFraisModel();
+        $baremeTransfert = $baremeModel->getFrais(3, $montant);
+
+        if (!$baremeTransfert) {
+            return redirect()->back()->with('erreur', 'Montant hors des tranches autorisées');
+        }
+
+        $fraisTransfert = $baremeTransfert['frais'];
+
         $commissionModel = new CommissionExterneModel();
-        $pourcentage = $commissionModel->getPourcentage();
+        $commissionLigne = $commissionModel->first();
+        $pourcentage = $commissionLigne ? (float) $commissionLigne['pourcentage'] : 0;
         $commission = (int) round($montant * $pourcentage / 100);
 
-        $totalDebit = $montant + $commission;
+        $totalDebit = $montant + $fraisTransfert + $commission;
 
         if ($client['solde'] < $totalDebit) {
             return redirect()->back()->with('erreur', 'Solde insuffisant');
@@ -234,14 +250,14 @@ class OperationController extends BaseController
             'autre_operateur_id' => $autreOperateur['id'],
             'numero_destinataire_externe' => $numeroDestinataire,
             'montant' => $montant,
-            'frais' => 0,
+            'frais' => $fraisTransfert,
             'commission' => $commission,
             'frais_retrait_inclus' => 0,
             'date_operation' => date('Y-m-d H:i:s'),
         ]);
 
         return redirect()->to('/client/dashboard')
-            ->with('succes', "Transfert de $montant Ar vers {$autreOperateur['nom']} effectué (commission : $commission Ar)");
+            ->with('succes', "Transfert de $montant Ar vers {$autreOperateur['nom']} effectué (frais : $fraisTransfert Ar, commission : $commission Ar)");
     }
 
     //historique

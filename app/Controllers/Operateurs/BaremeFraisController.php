@@ -4,7 +4,7 @@ namespace App\Controllers\Operateurs;
 
 use App\Controllers\BaseController;
 use App\Models\Operateurs\TypeOperationModel;
-use App\Models\Operateurs\BaremeFraisModel;
+use App\Models\BaremeFraisModel;
 
 class BaremeFraisController extends BaseController
 {
