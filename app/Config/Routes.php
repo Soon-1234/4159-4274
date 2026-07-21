@@ -16,7 +16,6 @@ $routes->get('operateur/logout', 'Operateurs\AuthController::logout');
 
 // Routes opérateur protégées
 $routes->group('operateur', ['filter' => 'auth:operateur'], function ($routes) {
-    $routes->get('dashboard', 'Operateurs\DashboardController::index');
     $routes->get('prefixes', 'Operateurs\PrefixeController::index');
     $routes->post('prefixes/store', 'Operateurs\PrefixeController::store');
     $routes->post('prefixes/delete/(:num)', 'Operateurs\PrefixeController::delete/$1');
