@@ -7,17 +7,28 @@
     <title><?= esc($titre ?? 'Espace Opérateur') ?></title>
     <link href="/assets/bootstrap/bootstrap.min.css" rel="stylesheet">
     <link href="/assets/css/style.css" rel="stylesheet">
+    <link href="/assets/css/operateur.css" rel="stylesheet">
 </head>
 
 <body>
     <div class="admin-nav">
-        <div class="brand"><a href="/operateur/dashboard"> Accueil </a></div>
         <a href="/operateur/prefixes">Préfixes</a>
         <a href="/operateur/types-operation">Types d'opération</a>
-        <a href="/operateur/clients">Comptes clients</a>
-        <a href="/operateur/gains">Situation des gains</a>
+
+        <details class="menu-deroulant">
+            <summary>Plus ▾</summary>
+            <div class="menu-contenu">
+                <a href="/operateur/clients">Comptes clients</a>
+                <a href="/operateur/gains">Situation des gains</a>
+                <a href="/operateur/autres-operateurs">Autres opérateurs</a>
+            </div>
+        </details>
+
+        <h2>Bonjour, <?= esc(session()->get('identifiant')) ?></h2>
         <a href="/auth/logout" class="logout-link">Déconnexion</a>
     </div>
+
+
 
     <div class="container">
         <?php if (session()->getFlashdata('erreur')): ?>
