@@ -23,7 +23,6 @@ $routes->group('operateur', ['filter' => 'auth:operateur'], function ($routes) {
     $routes->post('autres-operateurs/store', 'Operateurs\AutreOperateurController::store');
     $routes->post('autres-operateurs/delete/(:num)', 'Operateurs\AutreOperateurController::delete/$1');
     $routes->post('autres-operateurs/commission', 'Operateurs\AutreOperateurController::updateCommission');
-
     $routes->get('autres-operateurs/prefixes/(:num)', 'Operateurs\AutreOperateurController::prefixes/$1');
     $routes->post('autres-operateurs/prefixes/(:num)/store', 'Operateurs\AutreOperateurController::storePrefixe/$1');
     $routes->post('autres-operateurs/prefixes/delete/(:num)', 'Operateurs\AutreOperateurController::deletePrefixe/$1');

@@ -15,7 +15,6 @@
 
 .menu-deroulant summary::-webkit-details-marker {
     display: none;
-
 }
 
 .menu-contenu {
@@ -63,5 +62,4 @@ h2 {
 
 .admin-nav .logout-link {
     margin-left: 0;
-
 }
