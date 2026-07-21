@@ -8,6 +8,6 @@ class ClientModel extends Model
 {
     protected $table = 'client';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['numero', 'solde'];
+    protected $allowedFields = ['numero', 'solde', 'epargne_solde', 'epargne_pourcentage'];
     protected $returnType = 'array';
 }

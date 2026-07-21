@@ -12,6 +12,8 @@ use App\Models\Operateurs\AutreOperateurPrefixeModel;
 use App\Models\Operateurs\CommissionExterneModel;
 use App\Models\Operateurs\PromotionModel;
 
+
+
 class OperationController extends BaseController
 {
     protected function clientConnecte()
@@ -179,12 +181,12 @@ class OperationController extends BaseController
             return redirect()->back()->with('erreur', 'Montant hors des tranches autorisées');
         }
 
-        $fraisTransfert = $baremeTransfert['frais'] ;
+        $fraisTransfert = $baremeTransfert['frais'];
         $fraisRetrait = 0;
         $promotion = $fraisTransfert ? (float) $fraisTransfert['pourcentage'] : 0;
 
-        if($promotion == 1){
-            $fraisTransfert =  $fraisTransfert + $promotion;
+        if ($promotion == 1) {
+            $fraisTransfert = $fraisTransfert + $promotion;
         }
 
         if ($inclureFraisRetrait) {
@@ -196,6 +198,15 @@ class OperationController extends BaseController
 
         $totalDebit = $montant + $fraisTransfert + $fraisRetrait;
         $montantCredit = $montant + $fraisRetrait;
+
+        $pourcentageEpargne = $destinataire['epargne_pourcentage'];
+        $montantEpargne = (int) round($montantCredit * $pourcentageEpargne / 100);
+        $montantVersSolde = $montantCredit - $montantEpargne;
+
+        $clientModel->update($destinataire['id'], [
+            'solde' => $destinataire['solde'] + $montantVersSolde,
+            'epargne_solde' => $destinataire['epargne_solde'] + $montantEpargne,
+        ]);
 
         if ($client['solde'] < $totalDebit) {
             return redirect()->back()->with('erreur', 'Solde insuffisant');
@@ -328,31 +339,27 @@ class OperationController extends BaseController
         $destinatairesValides = [];
         $totalDebit = 0;
 
-        foreach ($numeros as $index => $numero) {
-            if ($numero === $client['numero']) {
-                return redirect()->back()->with('erreur', 'Impossible de vous inclure comme destinataire');
-            }
+        foreach ($destinatairesValides as $ligne) {
+            $dest = $ligne['destinataire'];
 
-            $destinataire = $clientModel->where('numero', $numero)->first();
-            if (!$destinataire) {
-                return redirect()->back()->with('erreur', "Numéro introuvable : $numero");
-            }
+            $pourcentageEpargne = $dest['epargne_pourcentage'];
+            $montantEpargne = (int) round($ligne['montant'] * $pourcentageEpargne / 100);
+            $montantVersSolde = $ligne['montant'] - $montantEpargne;
 
-            $montantPart = $part + ($index === $nombreDestinataires - 1 ? $reste : 0);
+            $clientModel->update($dest['id'], [
+                'solde' => $dest['solde'] + $montantVersSolde,
+                'epargne_solde' => $dest['epargne_solde'] + $montantEpargne,
+            ]);
 
-            $bareme = $baremeModel->getFrais(3, $montantPart);
-            if (!$bareme) {
-                return redirect()->back()->with('erreur', "Montant hors tranche pour $numero ($montantPart Ar)");
-            }
-
-            $frais = $bareme['frais'];
-            $totalDebit += $montantPart + $frais;
-
-            $destinatairesValides[] = [
-                'destinataire' => $destinataire,
-                'montant' => $montantPart,
-                'frais' => $frais,
-            ];
+            $historiqueModel->insert([
+                'client_id' => $client['id'],
+                'type_operation_id' => 3,
+                'destinataire_id' => $dest['id'],
+                'montant' => $ligne['montant'],
+                'frais' => $ligne['frais'],
+                'frais_retrait_inclus' => 0,
+                'date_operation' => date('Y-m-d H:i:s'),
+            ]);
         }
 
         if ($client['solde'] < $totalDebit) {
@@ -395,7 +402,7 @@ class OperationController extends BaseController
         return $operateurModel->find($trouve['autre_operateur_id']);
     }
 
-     public function getPromotion()
+    public function getPromotion()
     {
         $PromotionModel = new PromotionModel();
         $promotion = $this->request->getPost('promotion');
@@ -410,4 +417,25 @@ class OperationController extends BaseController
 
         return redirect()->to('/operateur/autres-operateurs')->with('succes', 'promotion mise à jour.');
     }
+
+    public function epargne()
+    {
+
+        $client = $this->clientConnecte();
+        if (!$client) {
+            return redirect()->to('/');
+        }
+        return view('clients/epargne', ['client' => $client]);
+
+    }
+
+    public function epargneValider()
+    {
+
+        $client = $this->clientConnecte();
+        if (!$client) {
+            return redirect()->to('/');
+        }
+    }
+
 }

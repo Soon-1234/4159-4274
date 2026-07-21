@@ -65,4 +65,9 @@ $routes->group('client', ['filter' => 'auth:client'], function ($routes) {
     //evoi multiple
     $routes->get('envoi-multiple', 'Clients\OperationController::envoiMultiple');
     $routes->post('envoi-multiple/valider', 'Clients\OperationController::envoiMultipleValider');
+
+    //epargne
+    $routes->get('epargne', 'Clients\EpargneController::index');
+    $routes->post('epargne/pourcentage', 'Clients\EpargneController::definirPourcentage');
+    $routes->post('epargne/transferer', 'Clients\EpargneController::transfererVersSolde');
 });

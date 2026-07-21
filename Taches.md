@@ -134,6 +134,8 @@ php spark make:seeder CommissionExterneSeeder
  php spark make:migration CreateAutreOperateurTable
  php spark make:migration CreateAutreOperateurPrefixeTable
  php spark make:migration CreateCommissionExterneTable
+ 
+
 
 ---- Leila --------
  Côté Opérateur
@@ -177,3 +179,13 @@ git checkout main
 git pull origin main
 git merge works
 git push origin main
+
+
+epargne different pour chaque client
+defini pourcentage selon choix client
+
+pourcentage choisi va vers l'epargne
+reste argent va dans solde principale
+
+
+ php spark make:migration AddEpargneToClientTable
